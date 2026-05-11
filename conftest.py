@@ -4,7 +4,9 @@ import os
 
 from playwright.async_api import Page
 
-
+def pytest_playwright_configure(config):
+    config.playwright_config.headless = True
+    
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config):
     if not os.path.exists('reports'):
