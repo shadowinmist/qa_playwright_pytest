@@ -8,10 +8,10 @@ def pytest_configure(config):
     os.makedirs("reports", exist_ok=True)
     os.makedirs("screenshots", exist_ok=True)
 
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    report_path = f"reports/playwright_report_{timestamp}.html"
-    config.option.htmlpath = report_path
-    print(f"Raport zapisany jako: {report_path}")
+    # timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    # report_path = f"reports/playwright_report_{timestamp}.html"
+    # config.option.htmlpath = report_path
+    # print(f"Raport zapisany jako: {report_path}")
 
 @pytest.fixture
 def locators_page(page: Page):
