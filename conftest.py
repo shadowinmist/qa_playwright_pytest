@@ -3,7 +3,6 @@ from datetime import datetime
 import os
 
 from playwright.async_api import Page
-from pygments.styles.dracula import yellow
 
 
 @pytest.hookimpl(tryfirst=True)
