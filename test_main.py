@@ -29,6 +29,15 @@ def test_has_title(page: Page):
 
     print('hehe', page.url)
 
+@pytest.mark.playwright
+def test_get_started_link(page: Page):
+    page.goto("https://playwright.dev/")
+
+    # Click the get started link.
+    page.get_by_role("link", name="Get started").click()
+
+    # Expects page to have a heading with the name of Installation.
+    expect(page.get_by_role("heading", name="Installation")).to_be_visible()
 
 @pytest.mark.regression
 @pytest.mark.playwright
@@ -70,50 +79,45 @@ def test_has_title(page: Page, link_name, ):
 
 
 @pytest.mark.regression
-def test_okienko(page: Page):
-    page.goto("https://playwright.dev/")
-    page.get_by_role("button", name="Search").click()
+def test_okienko(playwright_page):
+    playwright_page.get_by_role("button", name="Search").click()
 
-    button = page.get_by_placeholder("Search")
+    button = playwright_page.get_by_placeholder("Search")
     button.fill("css")
     button.press("enter")
-    expect(page).to_have_url(re.compile('css'))
+    expect(playwright_page).to_have_url(re.compile('css'))
 
 
-def test_okienko(page: Page):
-    page.goto("https://playwright.dev/")
-
+def test_okienko(playwright_page):
     # 1. KROK PIERWSZY: Klikamy w przycisk otwierający wyszukiwarkę.
     # Używamy get_by_role, ponieważ jak wspominałem, "Search" na górze to przycisk, a nie pole tekstowe.
-    page.get_by_role("button", name="Search").click()
+    playwright_page.get_by_role("button", name="Search").click()
 
     # 2. KROK DRUGI: Teraz otwiera się okienko. Szukamy w nim PRAWDZIWEGO pola wejściowego.
     # W nowym okienku pole input ma placeholder "Search docs".
-    szukajka = page.get_by_placeholder("Search docs")
+    szukajka = playwright_page.get_by_placeholder("Search docs")
 
     # 3. Wpisujemy tekst i zatwierdzamy
     szukajka.fill("css")
     szukajka.press("Enter")
-    print(page.url)
+    print(playwright_page.url)
     # 4. Sprawdzamy czy adres strony zawiera słowo "css"
-    expect(page).to_have_url(re.compile('css'))
+    expect(playwright_page).to_have_url(re.compile('css'))
 
-def test_get_by_role_github(page):
-    page.goto("https://playwright.dev/")
-
-    with page.expect_popup() as popup_info:
-        page.get_by_role("link", name="GitHub repository").click()
+@pytest.mark.regression
+def test_get_by_role_github(playwright_page):
+    with playwright_page.expect_popup() as popup_info:
+        playwright_page.get_by_role("link", name="GitHub repository").click()
     new_tab = popup_info.value
     #expect(new_tab).to_be_visible()
     expect(new_tab).to_have_url(re.compile(".*/git.*"))
 
-    page.get_by_link
-
-def test_print_aria_tree(page):
-    page.goto("https://playwright.dev/")
-    snapshot = page.locator("body").aria_snapshot()
+@pytest.mark.regression
+def test_print_aria_tree(playwright_page):
+    snapshot = playwright_page.locator("body").aria_snapshot()
     print(snapshot)
 
+@pytest.mark.regression
 def test_get_by_text_git(page):
     page.goto("https://playwright.dev/")
     with page.expect_popup() as popup_info:
@@ -123,15 +127,17 @@ def test_get_by_text_git(page):
     expect(new_tab).to_have_url(re.compile(".*github.*"))
 
 
-
+@pytest.mark.regression
 def test_example(page):
     page.goto("https://playwright.dev/")
 
     label = page.get_by_label("Email")
     print(label.count())
+    assert label.count() == 0
 
     labels = page.locator("button")
     print(labels.count())
+    assert labels.count() > 0
 
 
 def test_search_docs(page):
@@ -142,6 +148,7 @@ def test_search_docs(page):
     expect(page).to_have_url(re.compile("locators"))
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize('search_item, found_item', [
         ("Locators","locators"),
         ("About","about"),

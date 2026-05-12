@@ -18,6 +18,11 @@ def locators_page(page: Page):
     page.goto("https://practice.expandtesting.com/locators")
     yield page
 
+@pytest.fixture
+def playwright_page(page: Page):
+    page.goto("https://playwright.dev/")
+    yield page
+
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     outcome = yield
@@ -28,3 +33,9 @@ def pytest_runtest_makereport(item, call):
         if page:
             screenshot_path = f"screenshots/{item.name}.png"
             page.screenshot(path=screenshot_path, full_page=True)
+
+@pytest.fixture(autouse=True)
+def log_start_end():
+    print(">>> START testu")
+    yield  # Tutaj kod testu
+    print("<<< KONIEC testu")

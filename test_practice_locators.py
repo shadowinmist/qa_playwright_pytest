@@ -26,23 +26,22 @@ from pytest_html.extras import url
 # expect(page.locator("img")).to_have_count(3)
 
 @pytest.mark.playwright
-def test_link_link(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_link_link(locators_page: Page):
 
 
    # expect(page).to_have_title(re.compile(".*expand.testing.*"))
-    link = page.get_by_role("link", name="Contact")
+    link = locators_page.get_by_role("link", name="Contact")
     link.click()
-    send_btn = page.get_by_role("Link", name="Send")
+    send_btn = locators_page.get_by_role("Link", name="Send")
     expect(send_btn).to_be_visible()
 
 @pytest.mark.playwright
-def test_link_text(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_link_text(locators_page: Page):
+
   #  expect(page).to_have_title(re.compile("expandtesting"))
-    link = page.get_by_text("Contact")
+    link = locators_page.get_by_text("Contact")
     link.click()
-    send_btn = page.get_by_role("Link", name="Send")
+    send_btn = locators_page.get_by_role("Link", name="Send")
     expect(send_btn).to_be_visible()
  #   expect(page).to_have_title(re.compile("contact"))
 
@@ -50,72 +49,57 @@ def test_link_text(page: Page):
 
 
 @pytest.mark.playwright
-def test_placeholder(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_placeholder(locators_page: Page):
   #  expect(page).to_have_title(re.compile("expandtesting"))
-    placeholder = page.get_by_placeholder("Search the site")
+    placeholder = locators_page.get_by_placeholder("Search the site")
     placeholder.fill("ugabuga")
-    placehold = page.get_by_role("placeholder", name="Search the site")
+    placehold = locators_page.get_by_role("placeholder", name="Search the site")
     placehold.fill("ugabuga")
-    placeholder = page.get_by_placeholder("Filter by tag")
+    placeholder = locators_page.get_by_placeholder("Filter by tag")
     placeholder.fill("ugabuga")
     sleep(4)
-    expect(page.get_by_placeholder("Search the site")).to_have_value("ugabuga")
-    expect(page.get_by_placeholder("Filter by tag")).to_have_value("ugabuga")
+    expect(locators_page.get_by_placeholder("Search the site")).to_have_value("ugabuga")
+    expect(locators_page.get_by_placeholder("Filter by tag")).to_have_value("ugabuga")
 
 
 @pytest.mark.playwright
-def test_alttext(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_alttext(locators_page: Page):
+    locators_page.goto("https://practice.expandtesting.com/locators")
   #  expect(page).to_have_title(re.compile("expandtesting"))
-    alttext = page.get_by_alt_text("User avatar")
+    alttext = locators_page.get_by_alt_text("User avatar")
     alttext.click()
-    expect(page.get_by_alt_text("User avatar")).to_be_visible()
+    expect(locators_page.get_by_alt_text("User avatar")).to_be_visible()
 
 @pytest.mark.playwright
-def test_snapshot(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_snapshot(locators_page: Page):
   #  expect(page).to_have_title(re.compile("expandtesting"))
-    alttext = page.get_by_alt_text("User avatar")
+    alttext = locators_page.get_by_alt_text("User avatar")
     alttext.click()
-    page.screenshot(path="screenshot.png")
-    expect(page.get_by_alt_text("User avatar")).to_be_visible()
+    locators_page.screenshot(path="screenshot.png")
+    expect(locators_page.get_by_alt_text("User avatar")).to_be_visible()
 
 @pytest.mark.playwright
-def test_img_count(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_img_count(locators_page: Page):
   #  expect(page).to_have_title(re.compile("expandtesting"))
-    image = page.locator("img")
-    expect(image).to_have_count(2)
+    image = locators_page.locator("img")
+    expect(locators_page).to_have_count(2)
 
 
 
 @pytest.mark.playwright
-def test_getbytitle(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_getbytitle(locators_page: Page):
   #  expect(page).to_have_title(re.compile("expandtesting"))
-    title = page.get_by_title("Refresh content")
+    title = locators_page.get_by_title("Refresh content")
     title.click()
     expect(title).to_be_visible()
 
-    settings = page.get_by_title("Settings")
+    settings = locators_page.get_by_title("Settings")
     expect(settings).to_be_visible()
 
-@pytest.mark.playwright
-def test_get_started_link(page: Page):
-    page.goto("https://playwright.dev/")
-
-    # Click the get started link.
-    page.get_by_role("link", name="Get started").click()
-
-    # Expects page to have a heading with the name of Installation.
-    expect(page.get_by_role("heading", name="Installation")).to_be_visible()
 
 @pytest.mark.playwright
-def test_chaining_placeholder(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
-
-    main = page.locator("main")
+def test_chaining_placeholder(locators_page: Page):
+    main = locators_page.locator("main")
     search_input = main.get_by_placeholder("Search the site")
 
     search_input.fill("playwright")
@@ -123,29 +107,26 @@ def test_chaining_placeholder(page: Page):
 
 
 @pytest.mark.playwright
-
-def test_filter(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
+def test_filter(locators_page: Page):
 
     #1
-    section = page.locator("main").filter(has_text="Locators")
+    section = locators_page.locator("main").filter(has_text="Locators")
     expect(section).to_be_visible()
 
     #2
-    main = page.get_by_role("main")
-    section = page.locator("Section").filter(has=page.get_by_role("link",name="Contact"))
+    main = locators_page.get_by_role("main")
+    section = locators_page.locator("Section").filter(has=locators_page.get_by_role("link",name="Contact"))
 
 
-def test_first_link(page: Page):
-    page.goto("https://practice.expandtesting.com/locators")
-
-    links = page.locator("a")
+@pytest.mark.playwright
+def test_first_link(locators_page: Page):
+    links = locators_page.locator("a")
     first_link = links.first
 
     expect(first_link).to_be_visible()
     expect(first_link).to_have_text("Buy 1 Get 1 Free")
 
-
+@pytest.mark.playwright
 def test_last_link(page: Page):
     page.goto("https://practice.expandtesting.com/locators")
 
@@ -155,7 +136,7 @@ def test_last_link(page: Page):
     expect(last_link).to_be_visible()
     expect(last_link).to_have_text("Settings")
 
-
+@pytest.mark.playwright
 def test_nth_task(page: Page):
     page.goto("https://practice.expandtesting.com/locators")
 
@@ -176,8 +157,3 @@ def test_expandtesting_locators(locators_page):
     main = locators_page.locator("main")
     expect(main).to_be_visible()
 
-@pytest.fixture(autouse=True)
-def log_start_end():
-    print(">>> START testu")
-    yield  # Tutaj kod testu
-    print("<<< KONIEC testu")
