@@ -4,40 +4,6 @@ import pytest
 from playwright.sync_api import Page, expect
 import pytest_playwright
 
-@pytest.mark.playwright
-def test_has_title(page: Page):
-    page.goto("https://playwright.dev/")
-    # Expect a title "to contain" a substring.
-    expect(page).to_have_title(re.compile("Playwright"))
-    link = page.get_by_role("link", name="Get started")
-    print(link.count())
-    link.click()
-
-    page.wait_for_url("https://playwright.dev/docs/intro")
-    expect(page).to_have_title(re.compile("intro"))
-    # buttons = page.get_by_role("button")
-    #
-    # for i in range(buttons.count()):
-    #     btn = buttons.nth(i)
-    #     print(
-    #         "text=", btn.text_content(),
-    #         "aria-label=", btn.get_attribute("aria-label")
-#        )
-
-  #  page.get_by_role("link",name= "Get Started").click()
-
-
-    print('hehe', page.url)
-
-@pytest.mark.playwright
-def test_get_started_link(page: Page):
-    page.goto("https://playwright.dev/")
-
-    # Click the get started link.
-    page.get_by_role("link", name="Get started").click()
-
-    # Expects page to have a heading with the name of Installation.
-    expect(page.get_by_role("heading", name="Installation")).to_be_visible()
 
 @pytest.mark.regression
 @pytest.mark.playwright
@@ -59,33 +25,19 @@ def test_get_started_link(page: Page):
     "Community"
 ])
 
-def test_has_title(page: Page, link_name, ):
+def test_top_nav_links(page: Page, link_name, ):
 
     page.goto("https://playwright.dev/")
     # Expect a title "to contain" a substring.
     expect(page).to_have_title(re.compile("Playwright"))
-    # link = page.get_by_role("link", name="Get started")
-    # print(link.count())
-    # link.click()
 
-    page.wait_for_url("https://playwright.dev/docs/intro")
-   # expect(page).to_have_title(re.compile("intro"))
 
 
     page.get_by_role("link",name= link_name).click()
+    page.wait_for_url("https://playwright.dev/docs/intro")
+
     expect(page).to_have_title(re.compile("Playwright"))
 
-    print('hehe', page.url)
-
-
-@pytest.mark.regression
-def test_okienko(playwright_page):
-    playwright_page.get_by_role("button", name="Search").click()
-
-    button = playwright_page.get_by_placeholder("Search")
-    button.fill("css")
-    button.press("enter")
-    expect(playwright_page).to_have_url(re.compile('css'))
 
 
 def test_okienko(playwright_page):
@@ -95,6 +47,8 @@ def test_okienko(playwright_page):
 
     # 2. KROK DRUGI: Teraz otwiera się okienko. Szukamy w nim PRAWDZIWEGO pola wejściowego.
     # W nowym okienku pole input ma placeholder "Search docs".
+    # szukajka = playwright_page.get_by_placeholder("Search")
+    playwright_page.keyboard.press("Control+K")
     szukajka = playwright_page.get_by_placeholder("Search docs")
 
     # 3. Wpisujemy tekst i zatwierdzamy
@@ -140,7 +94,7 @@ def test_example(page):
     assert labels.count() > 0
 
 
-def test_search_docs(page):
+def test_search_docs(page: Page):
     page.goto("https://google.pl")
     page.get_by_placeholder("Szukaj").click()
     page.get_by_placeholder("Szukaj").fill("locators")
@@ -149,12 +103,17 @@ def test_search_docs(page):
 
 
 @pytest.mark.regression
-@pytest.mark.parametrize('search_item, found_item', [
-        ("Locators","locators"),
-        ("About","about"),
-        ("Contact","contact")])
-def test_serach_items_param(locators_page, search_item, found_item):
+@pytest.mark.parametrize('search_item, found_item, should_fail', [
+        ("Tips","tips", False),
+        ("About","about", False),
+        ("Contact","contact", False)])
+def test_serach_items_param(locators_page, search_item, found_item, should_fail):
     search =  locators_page.get_by_role("link",name=search_item)
+    print(locators_page.locator("body").aria_snapshot())
     search.click()
-    expect(locators_page).to_have_url(re.compile(f".*{found_item}"))
+    if should_fail:
+        with pytest.raises(AssertionError):
+            expect(locators_page).to_have_url(re.compile(f".*{found_item}"))
+    else:
+        expect(locators_page).to_have_url(re.compile(f".*{found_item}"))
     print(locators_page.url)

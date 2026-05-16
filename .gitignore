@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Playwright / testy
+playwright-report/
+test-results/
+blob-report/
+storage-state.json
+*.png
+screenshots/
+# IDE
+.vscode/
+.idea/
+
+# System
+.DS_Store
+Thumbs.db
