@@ -45,8 +45,34 @@ def test_link_text(locators_page: Page):
     expect(send_btn).to_be_visible()
  #   expect(page).to_have_title(re.compile("contact"))
 
+@pytest.mark.playwright
+def test_visible_btn(locators_page: Page):
+    btns = locators_page.get_by_role("button")
+    visible_btn = btns.filter(visible=True)
+    expect(btns).to_have_count(3)
+    expect(visible_btn).to_have_count(3)
 
+@pytest.mark.playwright
+def test_or_buttons(locators_page: Page):
+    reload = locators_page.get_by_role("button", name="Reload")
+    submit = locators_page.get_by_role("button", name="Submit")
 
+    either = reload.or_(submit)
+    expect(either).to_have_count(1)
+
+@pytest.mark.playwright
+def test_and_locator(locators_page: Page):
+    buttons = locators_page.get_by_role("button")
+    reload_text = locators_page.get_by_text("Reload")
+
+    combined = buttons.and_(reload_text)
+    expect(combined).to_have_count(1)
+
+@pytest.mark.playwright
+def test_headings_without_get(locators_page: Page):
+    headings = locators_page.get_by_role("heading")
+    no_get = headings.filter(has_not_text="get")
+    expect(no_get).to_have_count(6)
 
 @pytest.mark.playwright
 def test_placeholder(locators_page: Page):
@@ -153,7 +179,79 @@ def test_expandtesting_locators(locators_page):
     locator.click()
     print(locators_page.url)
     expect(locators_page).to_have_url(re.compile(".*cont.*"))
-
     main = locators_page.locator("main")
     expect(main).to_be_visible()
 
+@pytest.mark.playwright
+@pytest.mark.parametrize('search_item, found_item, should_fail', [
+        ("Tips","tips", False),
+        ("About","about", False),
+        ("Contact","contact", False)])
+def test_search_items_param(locators_page, search_item, found_item, should_fail):
+    search =  locators_page.get_by_role("link",name=search_item)
+    #print(locators_page.locator("body").aria_snapshot())
+    search.click()
+    if should_fail:
+        with pytest.raises(AssertionError):
+            expect(locators_page).to_have_url(re.compile(f".*{found_item}"))
+    else:
+        expect(locators_page).to_have_url(re.compile(f".*{found_item}"))
+    #print(locators_page.url)
+
+@pytest.mark.playwright
+def test_filter_contacts(locators_page: Page):
+    links = locators_page.get_by_role("link")
+    contacts = links.filter(has_text="Contact")
+    expect(contacts).to_have_count(1)
+    expect(contacts).to_have_attribute("href", "/contact")
+
+@pytest.mark.playwright
+def test_table_row(locators_page: Page):
+    row = locators_page.get_by_role("row").filter(has_text="Keyboard")
+    cells = row.get_by_role("cell")
+    expect(cells.nth(0)).to_have_text("Keyboard")
+    expect(cells.nth(1)).to_have_text("Available")
+    expect(cells.nth(2)).to_have_text("5")
+
+@pytest.mark.playwright
+def test_table_header(locators_page: Page):
+    table = locators_page.get_by_role("table")
+    header = table.get_by_role("columnheader")
+    expect(header).to_have_count(3)
+    expect(header).to_contain_text(["Product", "Status", "Stock"])
+
+@pytest.mark.playwright
+@pytest.mark.parametrize('heading_name, position',[
+        ('🎯 getByRole', 1),
+        ('📝 getByText', 2),
+        ('🏷️ getByLabel',3),
+        ('🔤 getByPlaceholder', 4),
+        ('🖼️ getByAltText', 5),
+        ('🏷️ getByTitle', 6),
+        ('🧪 getByTestId', 7),
+        ('🧭 Legacy CSS', 8)
+])
+def test_headers(locators_page: Page, heading_name, position):
+    headings = locators_page.get_by_role("heading")
+    expect(headings.nth(position)).to_have_text(heading_name)
+
+@pytest.mark.playwright
+def test_headers_with_get(locators_page: Page):
+    headings = locators_page.get_by_role("heading")
+    expect(headings).to_have_count(13)
+    headings_with_get = headings.filter(has_text=re.compile(r"get"))
+    expect(headings_with_get).to_have_count(7)
+
+@pytest.mark.playwright
+def test_hover_color(locators_page: Page):
+    btn = locators_page.get_by_role("button").filter(has_text=re.compile(r"Add"))
+    expect(btn).to_have_css("color", "rgb(255, 255, 255)")
+    btn.hover()
+    expect(btn).to_have_css("color", "rgb(255, 255, 255)")
+
+@pytest.mark.playwright
+def test_heading_after_click(locators_page: Page):
+    Demos = locators_page.get_by_role("button", name="Demos")
+    expect(locators_page.get_by_role("link", name="Examples")).not_to_be_visible()
+    Demos.click()
+    expect(locators_page.get_by_role("link", name="Examples")).to_be_visible()
