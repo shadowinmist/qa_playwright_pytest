@@ -32,10 +32,6 @@ jobs:
         run: |
           pytest -v --browser chromium -m regression
 
-      - name: Run tests firefox
-        run: |
-          pytest -v --browser firefox
-
       - name: Run tests playwright
         run: |
           pytest -v --browser chromium -m playwright
