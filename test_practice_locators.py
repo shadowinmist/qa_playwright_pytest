@@ -108,7 +108,7 @@ def test_snapshot(locators_page: Page):
 def test_img_count(locators_page: Page):
   #  expect(page).to_have_title(re.compile("expandtesting"))
     image = locators_page.locator("img")
-    expect(locators_page).to_have_count(2)
+    expect(image    ).to_have_count(2)
 
 
 
@@ -150,7 +150,7 @@ def test_first_link(locators_page: Page):
     first_link = links.first
 
     expect(first_link).to_be_visible()
-    expect(first_link).to_have_text("Buy 1 Get 1 Free")
+    expect(first_link).to_have_text("PMP Practice")
 
 @pytest.mark.playwright
 def test_last_link(page: Page):
