@@ -3,14 +3,12 @@ import pytest
 from playwright.sync_api import Page, expect
 
 
-@pytest.mark.regression
 @pytest.mark.playwright
 def test_get_started_link(playwright_page: Page):
 
     get_started = playwright_page.get_by_role("link", name="Get started")
     get_started.click()
     expect(get_started).to_have_attribute("href", "/docs/intro")
-
     expect(playwright_page.get_by_role("heading", name="Installation")).to_be_visible()
 
 @pytest.mark.regression
