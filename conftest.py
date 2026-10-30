@@ -3,6 +3,9 @@ from datetime import datetime
 import os
 from playwright.sync_api import Page
 
+
+#https://practice.expandtesting.com/
+
 @pytest.hookimpl(tryfirst=True)
 def pytest_configure(config):
     os.makedirs("reports", exist_ok=True)
@@ -21,6 +24,11 @@ def locators_page(page: Page):
 @pytest.fixture
 def playwright_page(page: Page):
     page.goto("https://playwright.dev/")
+    yield page
+
+@pytest.fixture
+def helion_page(page: Page):
+    page.goto("https://helion.pl/")
     yield page
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)

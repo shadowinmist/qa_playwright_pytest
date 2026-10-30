@@ -115,7 +115,6 @@ def test_search_docs(page: Page):
 
 
 @pytest.mark.regression
-
 def test_get_github_page(playwright_page: Page):
     with playwright_page.expect_popup() as popup_info:
         github_link = playwright_page.get_by_role("link", name="GitHub repository")

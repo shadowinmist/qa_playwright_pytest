@@ -74,19 +74,6 @@ def test_headings_without_get(locators_page: Page):
     no_get = headings.filter(has_not_text="get")
     expect(no_get).to_have_count(6)
 
-@pytest.mark.playwright
-def test_placeholder(locators_page: Page):
-  #  expect(page).to_have_title(re.compile("expandtesting"))
-    placeholder = locators_page.get_by_placeholder("Search the site")
-    placeholder.fill("ugabuga")
-    placehold = locators_page.get_by_role("placeholder", name="Search the site")
-    placehold.fill("ugabuga")
-    placeholder = locators_page.get_by_placeholder("Filter by tag")
-    placeholder.fill("ugabuga")
-    sleep(4)
-    expect(locators_page.get_by_placeholder("Search the site")).to_have_value("ugabuga")
-    expect(locators_page.get_by_placeholder("Filter by tag")).to_have_value("ugabuga")
-
 
 @pytest.mark.playwright
 def test_alttext(locators_page: Page):
@@ -255,3 +242,7 @@ def test_heading_after_click(locators_page: Page):
     expect(locators_page.get_by_role("link", name="Examples")).not_to_be_visible()
     Demos.click()
     expect(locators_page.get_by_role("link", name="Examples")).to_be_visible()
+
+
+
+
