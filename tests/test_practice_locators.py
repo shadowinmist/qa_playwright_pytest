@@ -88,7 +88,7 @@ def test_snapshot(locators_page: Page):
   #  expect(page).to_have_title(re.compile("expandtesting"))
     alttext = locators_page.get_by_alt_text("User avatar")
     alttext.click()
-    locators_page.screenshot(path="screenshot.png")
+    locators_page.screenshot(path="../screenshot.png")
     expect(locators_page.get_by_alt_text("User avatar")).to_be_visible()
 
 @pytest.mark.playwright
